@@ -1,0 +1,48 @@
+{
+  "name": "imath",
+  "version": "0.0.1",
+  "description": "smart math functions set",
+  "main": "build/index.js",
+  "scripts": {
+    "prepublish": "npm run build & npm run test",
+    "prebuild": "npm run eslint",
+    "test": "jasmine --config=specs/config/jasmine.json",
+    "eslint": "eslint ./src ./specs --fix",
+    "build": "webpack"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ihteandr/imath.git"
+  },
+  "browser": {
+    "./build/index.js": "./build/index.browser.js"
+  },
+  "keywords": [
+    "math",
+    "det",
+    "js"
+  ],
+  "author": {
+    "name": "Vladimir Ghukasyan",
+    "email": "ghukasyan.vladimir@gmail.com"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ihteandr/imath/issues"
+  },
+  "homepage": "https://github.com/ihteandr/imath#readme",
+  "devDependencies": {
+    "@babel/plugin-transform-exponentiation-operator": "^7.0.0",
+    "babel-loader": "7.1.4",
+    "babel-plugin-transform-class-properties": "^6.24.1",
+    "babel-plugin-transform-object-rest-spread": "6.26.0",
+    "eslint": "4.19.1",
+    "eslint-config-airbnb-base": "12.1.0",
+    "eslint-plugin-import": "2.11.0",
+    "eslint-plugin-jasmine": "^2.10.0",
+    "jasmine": "3.1.0",
+    "webpack": "4.8.3",
+    "webpack-cli": "^2.1.3"
+  },
+  "dependencies": {}
+}
