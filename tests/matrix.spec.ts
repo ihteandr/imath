@@ -128,7 +128,7 @@ describe('Algebra:Matrix', () => {
     ];
     items.forEach((item) => {
       expect(matrix.det(item.varaibales)).toBe(item.answer);
-      expect(variablesDet(...Object.values(item.varaibales))).toBe(item.answer);
+      expect(variablesDet(item.varaibales)).toBe(item.answer);
     });
   });
 
@@ -179,7 +179,7 @@ describe('Algebra:Matrix', () => {
     ];
     items.forEach((item) => {
       expect(matrix.det(item.varaibales)).toBe(item.answer);
-      expect(variablesDet(...Object.values(item.varaibales))).toBe(item.answer);
+      expect(variablesDet(item.varaibales)).toBe(item.answer);
     });
   });
 

@@ -1,13 +1,13 @@
 import { Formula } from './formula';
 
 export class Matrix {
-  data: Array<Array<number>>;
+  data: Array<Array<number | Formula | string>>;
   trusted: boolean;
-  constructor(data, trusted = false) {
+  constructor(data: Array<Array<string | number | Formula>>, trusted = false) {
     this.data = data;
     this.trusted = trusted;
   }
-  static _getCellValue(cell, variablesObject = null) {
+  static _getCellValue(cell, variablesObject: { [k: string]: number } = null) {
     let a = cell;
     if (typeof a === 'string') {
       if (variablesObject) {
@@ -24,7 +24,7 @@ export class Matrix {
     }
     return a;
   }
-  static variablesDet(data) {
+  static variablesDet(data: Array<Array<string | number | Formula>>) {
     const variables = [];
     for (let i = 0; i < data.length; i++) {
       for (let j = 0; j < data[i].length; j++) {
@@ -36,15 +36,15 @@ export class Matrix {
       }
     }
     const matrix = new Matrix(data);
-    return (...args) => {
+    return (args: { [k: string]: number }) => {
       const variablesObject = {};
-      variables.forEach((variable, index) => {
-        variablesObject[variable] = args[index];
+      variables.forEach((variable) => {
+        variablesObject[variable] = args[variable];
       });
       return matrix.det(variablesObject);
     };
   }
-  static multiply(matrixA, matrixB) {
+  static multiply(matrixA: Matrix | Array<Array<number>>, matrixB: Matrix | Array<Array<number>>) {
     if (Array.isArray(matrixA)) {
       matrixA = new Matrix(matrixA);
     }
@@ -64,15 +64,26 @@ export class Matrix {
     matrixAData.forEach((row, rowIndex) => {
       matrixCData[rowIndex] = [];
       for (let i = 0; i < matrixBRowSize; i++) {
-        const cellValue = row.reduce((sum, cell, cellIndex) => (
-          sum + (cell * matrixBData[cellIndex][i])
-        ), 0);
+        const cellValue = row.reduce((sum, cell, cellIndex) => {
+          if (typeof cell === 'number' && typeof matrixBData[cellIndex][i] === 'number') {
+            //@ts-ignore
+            return sum + (cell * matrixBData[cellIndex][i])
+          }
+          throw new Error('Matrix: try multiply not a number')
+        }, 0);
         matrixCData[rowIndex][i] = cellValue;
       }
     });
     return new Matrix(matrixCData);
   }
-  static add(matrixA, matrixB) {
+  static add(matrixA: Matrix | Array<Array<number>>, matrixB: Matrix | Array<Array<number>>) {
+    if (Array.isArray(matrixA)) {
+      matrixA = new Matrix(matrixA);
+    }
+
+    if (Array.isArray(matrixB)) {
+      matrixB = new Matrix(matrixB);
+    }
     const matrixBColumnSize = matrixB.getColumnSize();
     const matrixBRowSize = matrixB.getRowSize();
     const matrixAColumnSize = matrixA.getColumnSize();
@@ -87,17 +98,20 @@ export class Matrix {
     matrixAData.forEach((row, rowIndex) => {
       matrixCData[rowIndex] = [];
       row.forEach((cell, columnIndex) => {
-        matrixCData[rowIndex][columnIndex] = (
-          row[columnIndex] + matrixBData[rowIndex][columnIndex]
-        );
+        if (typeof row[columnIndex] === 'number' && typeof matrixBData[rowIndex][columnIndex] === 'number') {
+          //@ts-ignore
+          matrixCData[rowIndex][columnIndex] = row[columnIndex] + matrixBData[rowIndex][columnIndex];
+        } else {
+          throw new Error('Matrix: try add not a number')
+        }
       });
     });
     return new Matrix(matrixCData);
   }
-  add(matrixB) {
+  add(matrixB: Matrix | Array<Array<number>>) {
     this.data = Matrix.add(this, matrixB).data;
   }
-  multiply(matrixB) {
+  multiply(matrixB: Matrix | Array<Array<number>>) {
     this.data = Matrix.multiply(this, matrixB).data;
   }
   getData() {
@@ -117,7 +131,7 @@ export class Matrix {
     }
     return true;
   }
-  det(variablesObject = null) {
+  det(variablesObject: { [k: string]: number } = null) {
     if (!this.trusted) {
       if (!this.isSquare()) {
         throw new Error('Matrix is not a square');
@@ -137,7 +151,7 @@ export class Matrix {
     }
     return det;
   }
-  solveAsEquation(b, variablesObject = null) {
+  solveAsEquation(b: Array<number | Formula>, variablesObject: { [k: string]: number } = null) {
     const xScore = [];
     if (!this.isSquare()) {
       return xScore;
