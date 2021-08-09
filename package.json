@@ -5,9 +5,9 @@
   "main": "build/index.js",
   "scripts": {
     "prepublish": "npm run build & npm run test",
-    "prebuild": "npm run eslint",
-    "test": "jasmine --config=specs/config/jasmine.json",
-    "eslint": "eslint ./src ./specs --fix",
+    "prebuild": "npm run lint",
+    "test": "jest",
+    "lint": "eslint \"src/**/*.ts\" --fix",
     "build": "webpack"
   },
   "repository": {
@@ -32,17 +32,39 @@
   },
   "homepage": "https://github.com/ihteandr/imath#readme",
   "devDependencies": {
-    "@babel/plugin-transform-exponentiation-operator": "^7.0.0",
-    "babel-loader": "7.1.4",
-    "babel-plugin-transform-class-properties": "^6.24.1",
-    "babel-plugin-transform-object-rest-spread": "6.26.0",
-    "eslint": "4.19.1",
-    "eslint-config-airbnb-base": "12.1.0",
-    "eslint-plugin-import": "2.11.0",
-    "eslint-plugin-jasmine": "^2.10.0",
-    "jasmine": "3.1.0",
-    "webpack": "4.8.3",
-    "webpack-cli": "^2.1.3"
+    "@babel/cli": "^7.14.8",
+    "@babel/core": "^7.15.0",
+    "@babel/preset-typescript": "^7.15.0",
+    "@types/jest": "^26.0.24",
+    "@types/mocha": "^9.0.0",
+    "@typescript-eslint/eslint-plugin": "^4.29.0",
+    "eslint": "^7.32.0",
+    "jest": "^27.0.6",
+    "ts-jest": "^27.0.4",
+    "ts-loader": "^9.2.5",
+    "typescript": "^4.3.5",
+    "webpack": "^5.49.0",
+    "webpack-cli": "^4.7.2"
   },
-  "dependencies": {}
+  "jest": {
+    "moduleFileExtensions": [
+      "js",
+      "json",
+      "ts"
+    ],
+    "rootDir": ".",
+    "testRegex": ".*\\.spec\\.ts$",
+    "transform": {
+      "^.+\\.(t|j)s$": "ts-jest"
+    },
+    "collectCoverageFrom": [
+      "**/*.(t|j)s"
+    ],
+    "coverageDirectory": "./coverage",
+    "testEnvironment": "node",
+    "roots": [
+      "<rootDir>/tests",
+      "<rootDir>/src"
+    ]
+  }
 }

@@ -1,20 +1,20 @@
 const path = require('path');
 const options = {
-    entry: './src/index.js',
+    entry: "./src/index.ts",
+    output: {
+        path: "/build",
+        filename: "bundle.js",
+    },
+    resolve: {
+        extensions: [".ts", ".json"],
+    },
     mode: 'development',
     module: {
         rules: [
             {
-                test: /\.js$/,
-                loader: 'babel-loader',
-                options: {
-                    presets: ['es2015'],
-                    plugins: [
-                        'transform-exponentiation-operator',
-                        'transform-object-rest-spread',
-                        'transform-class-properties',
-                    ],
-                },
+                test: /\.ts$/,
+                use: ["ts-loader"],
+                exclude: [path.resolve('node_modules'), path.resolve('tests')]
             },
         ],
     },
