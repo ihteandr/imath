@@ -1,4 +1,5 @@
 import { Formula } from './formula';
+import { fixNumber } from './utils';
 
 export class Matrix {
   data: Array<Array<number | Formula | string>>;
@@ -149,7 +150,7 @@ export class Matrix {
       const value = Matrix._getCellValue(this.data[i][0], variablesObject);
       det += ((-1) ** i) * (value * matrix.det(variablesObject));
     }
-    return det;
+    return fixNumber(det);
   }
   solveAsEquation(b: Array<number | Formula>, variablesObject: { [k: string]: number } = null) {
     const xScore = [];
@@ -165,8 +166,8 @@ export class Matrix {
         row.slice(0, i).concat([b[index]]).concat(row.slice(i + 1))
       ));
       const stepMatrix = new Matrix(stepData);
-      const stepX = stepMatrix.det(variablesObject) / mainDet;
-      xScore.push(stepX === -0 ? 0 : stepX);
+      const stepX = fixNumber(stepMatrix.det(variablesObject) / mainDet);
+      xScore.push(stepX);
     }
     return xScore;
   }

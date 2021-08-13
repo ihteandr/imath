@@ -1,4 +1,4 @@
-import { Formula, Matrix } from "../src/algebra";
+import { fixNumber, Formula, Matrix } from "../src/algebra";
 
 describe('Algebra:Matrix', () => {
   it('multiply', () => {
@@ -222,7 +222,7 @@ describe('Algebra:Matrix', () => {
           [1, -2],
         ],
         b: [1, 0],
-        answer: [2 / 3, 1 / 3],
+        answer: [fixNumber(2 / 3), fixNumber(1 / 3)],
       },
     ];
     equations.forEach((equation) => {
