@@ -109,7 +109,7 @@ describe('Alegebra:Vector', () => {
       answer: 16
     }];
     areasExamples.forEach((example) => {  
-      expect(Vector.crossProduct(example.vector1, example.vector2).module()).toBe(example.answer);
+      expect(Vector.crossProduct(example.vector1, example.vector2).magnitude()).toBe(example.answer);
     })
   });
   it('crossProduct: value test', () => {
@@ -122,5 +122,23 @@ describe('Alegebra:Vector', () => {
     examples.forEach((example) => {
       expect(Vector.crossProduct(example.vector1, example.vector2).cords).toEqual(example.answer);
     })
-  })
+  });
+  it('mixedProduct: coplanarity', () => {
+    const examples = [{
+      vectors: [[1,3,0], [-1, 0, -1], [1,2,1]],
+      answer: false
+    }, {
+      vectors: [[3,2,1], [5,5,5], [0, -1, -2]],
+      answer: true
+    }, {
+      vectors: [[0, 6, 1], [0, 2, 0], [1, 1, 1]],
+      answer: false
+    }, {
+      vectors: [[4, 1, -2], [3, 2, 1], [5, 5, 5]],
+      answer: true
+    }];
+    examples.forEach((example) => {
+      expect(Vector.mixedProduct(...example.vectors) === 0).toBe(example.answer);
+    });
+  });
 })

@@ -6,15 +6,32 @@ export class Vector {
   constructor(cords) {
     this.cords = cords;
   }
-  static crossProduct(...vectors): Vector {
-    vectors = vectors.map((vector) => {
+  static mixedProduct(...vectorsArgs: Array<Vector | Array<number>>): number {
+    const vectors: Vector[] = vectorsArgs.map((vector) => {
+      if (Array.isArray(vector)) {
+        return new Vector(vector);
+      }
+      return vector;
+    });
+    if (vectors.length !== vectors[0].cords.length) {
+      throw new Error('Vector: can\'t calculate mixed product')
+    }
+    const data = [];
+    for (let i = 0; i < vectors.length; i++) {
+      const vector = vectors[i];
+      data.push(vector.cords);
+    }
+    return new Matrix(data).det();
+  }
+  static crossProduct(...vectorsArgs: Array<Vector | Array<number>>): Vector {
+    const vectors: Vector[] = vectorsArgs.map((vector) => {
       if (Array.isArray(vector)) {
         return new Vector(vector);
       }
       return vector;
     });
     if (vectors.length + 1 !== vectors[0].cords.length) {
-      throw new Error('Vector: can\'t calculate cross product');
+      throw new Error('Vector: can\'t calculate cross product, fix vectors');
     }
     const crossProduct = [];
     const len = vectors[0].cords.length;
@@ -25,7 +42,11 @@ export class Vector {
         const row = vector.cords.slice(0, i).concat(vector.cords.slice(i + 1));
         data.push(row);
       }
-      crossProduct.push(fixNumber(((-1) ** i) * new Matrix(data).det()));
+      const matrix = new Matrix(data);
+      if (!matrix.isSquare()) {
+        throw new Error('Vector: can\'t calculate cross product, generated matrix is not square');
+      }
+      crossProduct.push(fixNumber(((-1) ** i) * matrix.det()));
     }
     return new Vector(crossProduct)
   }
@@ -36,7 +57,7 @@ export class Vector {
     if (Array.isArray(vector2)) {
       vector2 = new Vector(vector2);
     }
-    return fixNumber(Vector.multiply(vector1, vector2) / (vector1.module() * vector2.module()));
+    return fixNumber(Vector.multiply(vector1, vector2) / (vector1.magnitude() * vector2.magnitude()));
   }
   static multiply (vector1: Vector | Array<number>, vector2: Vector | Array<number>): number {
     if (Array.isArray(vector1)) {
@@ -108,7 +129,7 @@ export class Vector {
   add(...vectors: Array<Vector>): Vector {
     return Vector.add(this, ...vectors);
   }
-  module (): number {
+  magnitude (): number {
     let sum = 0;
     for (let i = 0; i < this.cords.length; i++) {
       sum += this.cords[i] * this.cords[i];
